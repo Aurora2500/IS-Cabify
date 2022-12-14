@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.Map;
 
 public class PaymentManager {
-    int activePayment;
-    List<Double> promo;
-    List<PaymentMethod> payment;
-    static Map<String, Double> validCodes = Map.of(
+    private int activePayment;
+    private List<Double> promo;
+    private List<PaymentMethod> payment;
+    private static Map<String, Double> validCodes = Map.of(
             "CABIFYPROMO", 0.1,
             "CABIFY15", 0.15,
             "CABIFY20", 0.2,
@@ -33,6 +33,9 @@ public class PaymentManager {
         charge(ammount);
     }
 
+    public void setActivePayment(int activePayment){
+        this.activePayment = activePayment;
+    }
     private void charge(double ammount) {
         payment.get(activePayment).charge(ammount);
     }
