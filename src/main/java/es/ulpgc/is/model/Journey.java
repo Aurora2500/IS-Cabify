@@ -7,20 +7,16 @@ import java.util.Optional;
 public class Journey {
     private LocalDateTime arriveTime;
     private LocalDateTime departureTime;
-    private Optional <Tip> tip;
+    private Optional <Tip>tip;
+    private Optional<Rating> rating;
 
 
-    public Journey(LocalDateTime arriveTime, LocalDateTime departureTime, Tip tip) {
+    public Journey(LocalDateTime arriveTime, LocalDateTime departureTime, Tip tip, Optional<Rating> rating) {
         this.arriveTime = arriveTime;
         this.departureTime = departureTime;
+        this.rating = Optional.empty();
         this.tip = Optional.empty();
     }
-
-
-    public void JourneyTip(Tip tip){
-       new PaymentManager().PayTip(tip.getTip());
-    }
-
 
     public LocalDateTime arriveTime() {
         return arriveTime;
@@ -40,5 +36,15 @@ public class Journey {
 
     public Optional<Tip> tip() {
         return tip;
+    }
+    public void JourneyTip(Tip tip){
+        new PaymentManager().PayTip(tip.getTip());
+    }
+
+    public Optional<Rating> rating() {
+        return rating;
+    }
+    public void setRating(Rating rating) {
+        this.rating = Optional.of(rating);
     }
 }
