@@ -2,18 +2,18 @@ package es.ulpgc.is.model;
 
 public class Tip {
     private Chofer chofer;
-    private int tip;
+    private double tip;
 
-    public Tip(Chofer chofer, int tip) {
+    public Tip() {
         this.chofer = chofer;
         this.tip = tip;
     }
 
-    public int tip() {
+    public double getTip() {
         return tip;
     }
 
-    public void setTip(int tip) {
+    public void setTip(double tip) {
         this.tip = tip;
     }
 

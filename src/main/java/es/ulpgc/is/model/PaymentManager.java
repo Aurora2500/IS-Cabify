@@ -33,11 +33,13 @@ public class PaymentManager {
         charge(ammount);
     }
 
-    public void setActivePayment(int activePayment){
-        this.activePayment = activePayment;
-    }
     private void charge(double ammount) {
         payment.get(activePayment).charge(ammount);
     }
+
+    public void setActivePayment(int activePayment){
+        this.activePayment = activePayment;
+    }
+
 
 }
