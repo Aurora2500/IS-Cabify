@@ -1,6 +1,6 @@
 package es.ulpgc.is.model;
 
-public class PayPal {
+public class PayPal extends PaymentMethod {
     private String name;
 
     public PayPal(String name) {
@@ -11,7 +11,7 @@ public class PayPal {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    @Override
+    public void charge(double ammount) {
     }
 }

@@ -3,13 +3,14 @@ package es.ulpgc.is.model;
 import java.util.List;
 
 public class JourneyRecord {
-    private List<Journey> journeyList;
+    private List<PastTrip> journeyList;
 
-    public JourneyRecord(List<Journey> journeyList) {
+    public JourneyRecord(List<PastTrip> journeyList) {
         this.journeyList = journeyList;
     }
 
-    public List<Journey> journeyList() {
+    public List<PastTrip> journeyList() {
         return journeyList;
     }
+
 }

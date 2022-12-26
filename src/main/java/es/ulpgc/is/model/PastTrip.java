@@ -4,14 +4,15 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 //Journey: es trayecto
-public class Journey {
+public class PastTrip extends Trip {
     private LocalDateTime arriveTime;
     private LocalDateTime departureTime;
     private Optional <Tip>tip;
     private Optional<Rating> rating;
 
 
-    public Journey(LocalDateTime arriveTime, LocalDateTime departureTime, Tip tip, Optional<Rating> rating) {
+    public PastTrip(String destinationAdress, String pickupAdress, LocalDateTime arriveTime, LocalDateTime departureTime, Tip tip, Optional<Rating> rating) {
+        super(destinationAdress, pickupAdress);
         this.arriveTime = arriveTime;
         this.departureTime = departureTime;
         this.rating = Optional.empty();

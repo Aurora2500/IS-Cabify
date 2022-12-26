@@ -12,6 +12,7 @@ public class PaymentManager {
             "CABIFY15", 0.15,
             "CABIFY20", 0.2,
             "CABIFY30", 0.3);
+
     public boolean verifycode(String code) {
         Double discount = validCodes.get(code);
         if (discount != null){
