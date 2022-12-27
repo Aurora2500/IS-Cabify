@@ -38,6 +38,7 @@ public class PastTrip extends Trip {
     public Optional<Tip> tip() {
         return tip;
     }
+
     public void JourneyTip(Tip tip){
         new PaymentManager().PayTip(tip.getTip());
     }

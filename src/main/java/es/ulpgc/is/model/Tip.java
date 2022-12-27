@@ -1,7 +1,7 @@
 package es.ulpgc.is.model;
 
 public class Tip {
-    private Chofer chofer;
+    private Driver chofer;
     private double tip;
 
     public Tip() {
@@ -17,11 +17,11 @@ public class Tip {
         this.tip = tip;
     }
 
-    public Chofer chofer() {
+    public Driver chofer() {
         return chofer;
     }
 
-    public void setChofer(Chofer chofer) {
+    public void setChofer(Driver chofer) {
         this.chofer = chofer;
     }
 }

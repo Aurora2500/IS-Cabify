@@ -2,10 +2,10 @@ package es.ulpgc.is.model;
 
 import java.time.LocalDateTime;
 
-public class ReservedTrip extends Trip{
+public class ReserveTrip extends Trip{
     private LocalDateTime reservationTime;
 
-    public ReservedTrip(String destinationAdress, String pickupAdress, LocalDateTime reservationTime) {
+    public ReserveTrip(String destinationAdress, String pickupAdress, LocalDateTime reservationTime) {
         super(destinationAdress, pickupAdress);
         this.reservationTime = reservationTime;
     }

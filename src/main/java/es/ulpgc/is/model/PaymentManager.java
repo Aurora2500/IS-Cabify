@@ -6,19 +6,24 @@ import java.util.Map;
 public class PaymentManager {
     private int activePayment;
     private List<Double> promo;
-    private List<PaymentMethod> payment;
+    private List<PaymentMethod> payments;
     private static Map<String, Double> validCodes = Map.of(
             "CABIFYPROMO", 0.1,
             "CABIFY15", 0.15,
             "CABIFY20", 0.2,
             "CABIFY30", 0.3);
 
-    public boolean verifycode(String code) {
+
+    private void charge(double ammount) {
+        payments.get(activePayment).charge(ammount);
+    }
+
+    public boolean redeemCode(String code) {
         Double discount = validCodes.get(code);
         if (discount != null){
             promo.add(discount);
         }
-        return discount!=null;
+        return discount != null;
     }
 
     public void PayFare(double price) {
@@ -34,13 +39,17 @@ public class PaymentManager {
         charge(ammount);
     }
 
-    private void charge(double ammount) {
-        payment.get(activePayment).charge(ammount);
+
+    public void addPayment(PaymentMethod paymentMethod){
+        payments.add(paymentMethod);
+    }
+
+    public void removePayment(PaymentMethod paymentMethod){
+        payments.remove(paymentMethod);
     }
 
     public void setActivePayment(int activePayment){
         this.activePayment = activePayment;
     }
-
 
 }
