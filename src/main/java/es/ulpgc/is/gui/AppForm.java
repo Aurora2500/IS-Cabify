@@ -14,6 +14,11 @@ public class AppForm extends JFrame {
 	private JButton promoCodeButton;
 	private JButton newPaymentMethodButton;
 	private JList paymentList;
+	private JButton rateButton;
+	private JButton tipButton;
+	private JList historyList;
+	private JButton cancelButton;
+	private JList reservedList;
 
 	public AppForm() throws HeadlessException {
 		setContentPane(panel);
