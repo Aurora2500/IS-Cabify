@@ -19,6 +19,13 @@ public class AppForm extends JFrame {
 	private JList historyList;
 	private JButton cancelButton;
 	private JList reservedList;
+	private JButton removePaymentMethodButton;
+	private JButton setActivePaymentButton;
+	private JTextField textField1;
+	private JTextField textField2;
+	private JRadioButton reserveRadioButton;
+	private JRadioButton pickUpNowRadioButton;
+	private JTextField textField3;
 
 	public AppForm() throws HeadlessException {
 		setContentPane(panel);
