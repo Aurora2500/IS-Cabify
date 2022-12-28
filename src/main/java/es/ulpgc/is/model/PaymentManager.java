@@ -1,13 +1,14 @@
 package es.ulpgc.is.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class PaymentManager {
     private int activePayment;
-    private List<Double> promo;
-    private List<PaymentMethod> payments;
-    private static Map<String, Double> validCodes = Map.of(
+    private final List<Double> promo = new ArrayList<>();
+    private final List<PaymentMethod> payments = new ArrayList<>();
+    private final static Map<String, Double> validCodes = Map.of(
             "CABIFYPROMO", 0.1,
             "CABIFY15", 0.15,
             "CABIFY20", 0.2,
@@ -16,6 +17,10 @@ public class PaymentManager {
 
     private void charge(double ammount) {
         payments.get(activePayment).charge(ammount);
+    }
+
+    public List<PaymentMethod> getPayments() {
+        return payments;
     }
 
     public boolean redeemCode(String code) {

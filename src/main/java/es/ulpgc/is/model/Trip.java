@@ -2,27 +2,26 @@ package es.ulpgc.is.model;
 
 //Trip: es viaje
 public abstract class Trip {
-    private String destinationAdress;
-    private String pickupAdress;
+    private final String destinationAddress;
+    private final String pickupAddress;
 
-    protected Trip(String destination, String place) {
-        this.destinationAdress = destination;
-        this.pickupAdress = place;
+    private final Driver driver;
+
+    public Trip(String pickupAddress, String destinationAddress, Driver driver) {
+        this.destinationAddress = destinationAddress;
+        this.pickupAddress = pickupAddress;
+        this.driver = driver;
     }
 
-    public String destination() {
-        return destinationAdress;
+    public String destinationAddress() {
+        return destinationAddress;
     }
 
-    public void setDestinationAdress(String destinationAdress) {
-        this.destinationAdress = destinationAdress;
+    public String pickupAddress() {
+        return pickupAddress;
     }
 
-    public String place() {
-        return pickupAdress;
-    }
-
-    public void setPlace(String place) {
-        this.pickupAdress = place;
+    public Driver driver() {
+        return driver;
     }
 }

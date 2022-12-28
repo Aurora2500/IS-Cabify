@@ -1,9 +1,18 @@
 package es.ulpgc.is.gui;
 
+import es.ulpgc.is.model.Controller;
+import es.ulpgc.is.model.PastTrip;
+import es.ulpgc.is.model.PaymentMethod;
+import es.ulpgc.is.model.ReservedTrip;
+
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class AppForm extends JFrame {
+	Controller controller;
 	private JPanel panel;
 	private JPanel historyTab;
 	private JPanel rideTab;
@@ -21,27 +30,121 @@ public class AppForm extends JFrame {
 	private JList reservedList;
 	private JButton removePaymentMethodButton;
 	private JButton setActivePaymentButton;
-	private JTextField textField1;
-	private JTextField textField2;
+	private JTextField destinationAddressField;
+	private JTextField pickupAddressField;
 	private JRadioButton reserveRadioButton;
 	private JRadioButton pickUpNowRadioButton;
-	private JTextField textField3;
+	private JTextField pickupTimeField;
+	private JLabel reservedPickupTimeField;
+	private JLabel reservedDriverField;
+	private JLabel reservedPickupAddressField;
+	private JLabel reservedDestinationAddressField;
 
-	public AppForm() throws HeadlessException {
+	public AppForm(Controller controller) throws HeadlessException {
 		setContentPane(panel);
 
-		// exit on close
+		this.controller = controller;
+
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setupGetRideTab();
+		setupReservedTab();
+		setupHistoryTab();
+		setupPaymentTab();
+	}
 
-		//  set the callback for the button
+	private void setupGetRideTab() {
+		ButtonGroup getRideGroup = new ButtonGroup();
+		getRideGroup.add(reserveRadioButton);
+		getRideGroup.add(pickUpNowRadioButton);
+		reserveRadioButton.setSelected(true);
+
+		reserveRadioButton.addActionListener(e -> {
+			pickupTimeField.setEnabled(true);
+		});
+
+		pickUpNowRadioButton.addActionListener(e -> {
+			pickupTimeField.setEnabled(false);
+			pickupTimeField.setText("");
+		});
+
 		reserveButton.addActionListener(e -> {
-			//  do something
-			buttonCallback();
+		});
+	}
+
+	private void setupReservedTab() {
+		List<ReservedTrip> trips = controller.reservedTripRepository().list();
+
+		System.out.println(trips.size());
+
+		ListModel<ReservedTrip> model = new AbstractListModel<ReservedTrip>() {
+			@Override
+			public int getSize() {
+				return trips.size();
+			}
+			@Override
+			public ReservedTrip getElementAt(int i) {
+				return trips.get(i);
+			}
+		};
+		reservedList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		reservedList.setModel(model);
+
+		reservedList.addListSelectionListener(e -> {
+			ReservedTrip trip = (ReservedTrip) reservedList.getSelectedValue();
+			if (trip != null) {
+				reservedPickupTimeField.setText(trip.pickupTime().truncatedTo(ChronoUnit.SECONDS).toString());
+				reservedDriverField.setText(trip.driver().name());
+				reservedPickupAddressField.setText(trip.pickupAddress());
+				reservedDestinationAddressField.setText(trip.destinationAddress());
+			}
 		});
 
-		promoCodeButton.addActionListener(e -> {
-			promoCodeButtonCallback();
+		cancelButton.addActionListener(e -> {
+			int index = reservedList.getSelectedIndex();
+			if (index != -1) {
+				System.out.println("Canceling trip " + index);
+				trips.remove(index);
+			}
 		});
+	}
+
+	private void setupHistoryTab() {
+		List<PastTrip> trips = controller.pastTripRepository().list();
+		ListModel<PastTrip> model = new AbstractListModel<>() {
+			@Override
+			public int getSize() {
+				return trips.size();
+			}
+			@Override
+			public PastTrip getElementAt(int i) {
+				return trips.get(i);
+			}
+		};
+
+		historyList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		historyList.setModel(model);
+
+		historyList.addListSelectionListener(e -> {
+			PastTrip trip = (PastTrip) historyList.getSelectedValue();
+			if (trip != null) {
+			}
+		});
+	}
+
+	private void setupPaymentTab() {
+		ListModel<PaymentMethod> model = new AbstractListModel<>() {
+			@Override
+			public int getSize() {
+				return controller.paymentManager().getPayments().size();
+			}
+			@Override
+			public PaymentMethod getElementAt(int i) {
+				return controller.paymentManager().getPayments().get(i);
+			}
+		};
+
+		paymentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		paymentList.setModel(model);
 
 		newPaymentMethodButton.addActionListener(e -> {
 			newPaymentMethodButtonCallback();
@@ -49,7 +152,7 @@ public class AppForm extends JFrame {
 	}
 
 	private void newPaymentMethodButtonCallback() {
-		NewPaymentDialog dialog = new NewPaymentDialog();
+		NewPaymentDialog dialog = new NewPaymentDialog(controller);
 		dialog.pack();
 		dialog.setVisible(true);
 	}

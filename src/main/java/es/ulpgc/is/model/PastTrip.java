@@ -1,38 +1,31 @@
 package es.ulpgc.is.model;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
-//Journey: es trayecto
 public class PastTrip extends Trip {
-    private LocalDateTime arriveTime;
-    private LocalDateTime departureTime;
-    private Optional <Tip>tip;
+    private final LocalDateTime arrivalTime;
+    private final LocalDateTime departureTime;
+    private Optional<Tip> tip;
     private Optional<Rating> rating;
 
 
-    public PastTrip(String destinationAdress, String pickupAdress, LocalDateTime arriveTime, LocalDateTime departureTime, Tip tip, Optional<Rating> rating) {
-        super(destinationAdress, pickupAdress);
-        this.arriveTime = arriveTime;
+    public PastTrip(String destinationAddress, String pickupAddress, Driver driver, LocalDateTime arrivalTime, LocalDateTime departureTime) {
+        super(destinationAddress, pickupAddress, driver);
+        this.arrivalTime = arrivalTime;
         this.departureTime = departureTime;
         this.rating = Optional.empty();
         this.tip = Optional.empty();
     }
 
-    public LocalDateTime arriveTime() {
-        return arriveTime;
-    }
-
-    public void setArriveTime(LocalDateTime arriveTime) {
-        this.arriveTime = arriveTime;
+    public LocalDateTime arrivalTime() {
+        return arrivalTime;
     }
 
     public LocalDateTime departureTime() {
         return departureTime;
-    }
-
-    public void setDepartureTime(LocalDateTime departureTime) {
-        this.departureTime = departureTime;
     }
 
     public Optional<Tip> tip() {
@@ -48,5 +41,10 @@ public class PastTrip extends Trip {
     }
     public void setRating(Rating rating) {
         this.rating = Optional.of(rating);
+    }
+
+    @Override
+    public String toString() {
+        return this.pickupAddress() + " - " + this.destinationAddress() + " (" + this.arrivalTime().truncatedTo(ChronoUnit.SECONDS).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) + ")";
     }
 }

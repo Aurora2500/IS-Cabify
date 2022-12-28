@@ -1,16 +1,23 @@
 package es.ulpgc.is.gui;
 
+import es.ulpgc.is.model.Controller;
+
 import javax.swing.*;
 import java.awt.event.*;
 
 public class NewPaymentDialog extends JDialog {
+	Controller controller;
 	private JPanel contentPane;
 	private JButton buttonOK;
 	private JButton buttonCancel;
 	private JRadioButton PaypalRadioButton;
 	private JRadioButton BankRadioButton;
+	private JTextField detailsField;
+	private JLabel newPaymentMethodField;
 
-	public NewPaymentDialog() {
+	public NewPaymentDialog(Controller controller) {
+		this.controller = controller;
+
 		setContentPane(contentPane);
 		setModal(true);
 		getRootPane().setDefaultButton(buttonOK);
@@ -20,8 +27,10 @@ public class NewPaymentDialog extends JDialog {
 		group.add(PaypalRadioButton);
 		group.add(BankRadioButton);
 
-		// set the default selection
-		PaypalRadioButton.setSelected(true);
+
+		PaypalRadioButton.addActionListener(e -> newPaymentMethodField.setText("Name:"));
+
+		BankRadioButton.addActionListener(e -> newPaymentMethodField.setText("IBAN:"));
 
 		buttonOK.addActionListener(e -> onOK());
 
@@ -43,21 +52,14 @@ public class NewPaymentDialog extends JDialog {
 		// add your code here
 		// print which radio button is selected
 		if (PaypalRadioButton.isSelected()) {
-			System.out.println("Paypal selected");
+			controller.addPayPal(detailsField.getText());
 		} else if (BankRadioButton.isSelected()) {
-			System.out.println("Bank selected");
+			controller.addBankCard(detailsField.getText());
 		}
 		dispose();
 	}
 
 	private void onCancel() {
 		dispose();
-	}
-
-	public static void main(String[] args) {
-		NewPaymentDialog dialog = new NewPaymentDialog();
-		dialog.pack();
-		dialog.setVisible(true);
-		System.exit(0);
 	}
 }

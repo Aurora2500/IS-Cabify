@@ -1,20 +1,23 @@
 package es.ulpgc.is.model;
 
 public class BankCard extends PaymentMethod {
-    private String cardCode;
+    private final String iban;
 
-    public BankCard(String cardCode) {
-        this.cardCode = cardCode;
+    public BankCard(String iban) {
+        this.iban = iban;
     }
 
-    public String cardCode() {
-        return cardCode;
+    public String iban() {
+        return iban;
     }
 
     @Override
-    public void charge(double ammount) {
-
+    public void charge(double amount) {
+        System.out.println("Charging " + amount + " to IBAN number: " + iban);
     }
 
-
+    @Override
+    public String toString() {
+        return "Bank card: " + iban();
+    }
 }
