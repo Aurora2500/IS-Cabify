@@ -1,4 +1,55 @@
 package es.ulpgc.is.model;
 
+import java.util.List;
+import java.util.Map;
+
 public class PaymentManager {
+    private int activePayment;
+    private List<Double> promo;
+    private List<PaymentMethod> payments;
+    private static Map<String, Double> validCodes = Map.of(
+            "CABIFYPROMO", 0.1,
+            "CABIFY15", 0.15,
+            "CABIFY20", 0.2,
+            "CABIFY30", 0.3);
+
+
+    private void charge(double ammount) {
+        payments.get(activePayment).charge(ammount);
+    }
+
+    public boolean redeemCode(String code) {
+        Double discount = validCodes.get(code);
+        if (discount != null){
+            promo.add(discount);
+        }
+        return discount != null;
+    }
+
+    public void PayFare(double price) {
+        double finalPrice = price;
+        for (double discount : promo) {
+            finalPrice *= 1 - discount;
+        }
+        promo.clear();
+        charge(finalPrice);
+    }
+
+    public void PayTip(double ammount) {
+        charge(ammount);
+    }
+
+
+    public void addPayment(PaymentMethod paymentMethod){
+        payments.add(paymentMethod);
+    }
+
+    public void removePayment(PaymentMethod paymentMethod){
+        payments.remove(paymentMethod);
+    }
+
+    public void setActivePayment(int activePayment){
+        this.activePayment = activePayment;
+    }
+
 }

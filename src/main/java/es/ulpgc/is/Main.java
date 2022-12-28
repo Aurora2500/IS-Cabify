@@ -1,5 +1,6 @@
 package es.ulpgc.is;
 
+import es.ulpgc.is.model.Controller;
 import es.ulpgc.is.gui.AppForm;
 
 public class Main {
@@ -8,5 +9,7 @@ public class Main {
 		app.setSize(1200, 1200);
 		app.pack();
 		app.setVisible(true);
+
+		Controller controller = new Controller();
 	}
 }
