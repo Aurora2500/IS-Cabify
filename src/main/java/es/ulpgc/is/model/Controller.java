@@ -2,6 +2,7 @@ package es.ulpgc.is.model;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Random;
 
 public class Controller {
 	private final PaymentManager paymentManager = new PaymentManager();
@@ -75,6 +76,7 @@ public class Controller {
 	public PastTrip finishTrip(int index) {
 		ReservedTrip trip = reservedTripRepository.removeReserve(index);
 		LocalDateTime now = LocalDateTime.now();
+		double price = new Random().nextDouble() + 10;
 		PastTrip pastTrip = new PastTrip(trip.pickupAddress(), trip.destinationAddress(), trip.driver(), trip.pickupTime(), now);
 		pastTripRepository.add(pastTrip);
 		return pastTrip;

@@ -60,7 +60,6 @@ public class NewPaymentDialog extends JDialog {
 			callback.accept(pm);
 		} else if (BankRadioButton.isSelected()) {
 			PaymentMethod pm = controller.addBankCard(detailsField.getText());
-			System.out.println(callback + " " + pm);
 			callback.accept(pm);
 		}
 		dispose();

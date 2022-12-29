@@ -131,7 +131,6 @@ public class AppForm extends JFrame {
 		cancelButton.addActionListener(e -> {
 			int index = reservedList.getSelectedIndex();
 			if (index != -1) {
-				System.out.println("Canceling trip " + index);
 				trips.remove(index);
 				reservedTripListModel.remove(index);
 			}
@@ -142,7 +141,6 @@ public class AppForm extends JFrame {
 			if (index == -1) {
 				return;
 			}
-			System.out.println("Finishing trip " + index);
 			PastTrip pastTrip = controller.finishTrip(index);
 			reservedTripListModel.remove(index);
 			pastTripListModel.addElement(pastTrip);
@@ -261,18 +259,12 @@ public class AppForm extends JFrame {
 		dialog.setVisible(true);
 	}
 
-	private void buttonCallback() {
-		System.out.println("Button pressed");
-	}
-
 	private void promoCodeButtonCallback() {
 		String code = promoCodeField.getText();
 		if (code.isEmpty()) {
 			// ignore if empty
 			return;
 		}
-		// print out the promo code
-		System.out.println("Redeeming promo code: " + promoCodeField.getText());
 		// clear out the promo code field
 		promoCodeField.setText("");
 
