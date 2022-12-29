@@ -22,12 +22,12 @@ public class AppForm extends JFrame {
 	private JTextField promoCodeField;
 	private JButton promoCodeButton;
 	private JButton newPaymentMethodButton;
-	private JList paymentList;
+	private JList<PaymentMethod> paymentList;
 	private JButton rateButton;
 	private JButton tipButton;
-	private JList historyList;
+	private JList<PastTrip> historyList;
 	private JButton cancelButton;
-	private JList reservedList;
+	private JList<ReservedTrip> reservedList;
 	private JButton removePaymentMethodButton;
 	private JButton setActivePaymentButton;
 	private JTextField destinationAddressField;
@@ -74,8 +74,6 @@ public class AppForm extends JFrame {
 	private void setupReservedTab() {
 		List<ReservedTrip> trips = controller.reservedTripRepository().list();
 
-		System.out.println(trips.size());
-
 		ListModel<ReservedTrip> model = new AbstractListModel<ReservedTrip>() {
 			@Override
 			public int getSize() {
@@ -90,7 +88,7 @@ public class AppForm extends JFrame {
 		reservedList.setModel(model);
 
 		reservedList.addListSelectionListener(e -> {
-			ReservedTrip trip = (ReservedTrip) reservedList.getSelectedValue();
+			ReservedTrip trip = reservedList.getSelectedValue();
 			if (trip != null) {
 				reservedPickupTimeField.setText(trip.pickupTime().truncatedTo(ChronoUnit.SECONDS).toString());
 				reservedDriverField.setText(trip.driver().name());
@@ -125,9 +123,15 @@ public class AppForm extends JFrame {
 		historyList.setModel(model);
 
 		historyList.addListSelectionListener(e -> {
-			PastTrip trip = (PastTrip) historyList.getSelectedValue();
+			PastTrip trip = historyList.getSelectedValue();
 			if (trip != null) {
 			}
+		});
+
+		rateButton.addActionListener(e -> {
+			RateTripDialog dialog = new RateTripDialog();
+			dialog.pack();
+			dialog.setVisible(true);
 		});
 	}
 
@@ -162,10 +166,13 @@ public class AppForm extends JFrame {
 	}
 
 	private void promoCodeButtonCallback() {
+		if (promoCodeField.getText().isEmpty()) {
+			// ignore if empty
+			return;
+		}
 		// print out the promo code
 		System.out.println("Redeeming promo code: " + promoCodeField.getText());
 		// clear out the promo code field
 		promoCodeField.setText("");
-		// TODO: connect this to the model controller
 	}
 }
