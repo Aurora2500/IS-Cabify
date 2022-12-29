@@ -14,11 +14,7 @@ import java.awt.*;
 public class AppForm extends JFrame {
 	Controller controller;
 	private JPanel panel;
-	private JPanel historyTab;
-	private JPanel rideTab;
 	private JButton reserveButton;
-	private JPanel reserveTab;
-	private JPanel paymentTab;
 	private JTextField promoCodeField;
 	private JButton promoCodeButton;
 	private JButton newPaymentMethodButton;
