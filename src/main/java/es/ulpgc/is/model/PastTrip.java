@@ -32,8 +32,8 @@ public class PastTrip extends Trip {
         return tip;
     }
 
-    public void JourneyTip(Tip tip){
-        new PaymentManager().PayTip(tip.getTip());
+    public void giveTip(Tip tip) {
+        this.tip = Optional.of(tip);
     }
 
     public Optional<Rating> rating() {

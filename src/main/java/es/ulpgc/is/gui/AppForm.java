@@ -1,9 +1,6 @@
 package es.ulpgc.is.gui;
 
-import es.ulpgc.is.model.Controller;
-import es.ulpgc.is.model.PastTrip;
-import es.ulpgc.is.model.PaymentMethod;
-import es.ulpgc.is.model.ReservedTrip;
+import es.ulpgc.is.model.*;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -13,7 +10,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import javax.swing.*;
+import javax.swing.text.html.Option;
 import java.awt.*;
+import java.util.Optional;
 
 public class AppForm extends JFrame {
 	Controller controller;
@@ -47,6 +46,10 @@ public class AppForm extends JFrame {
 	private JLabel historyRateLabel;
 	private JLabel historyTipLabel;
 	private JLabel discountLabel;
+
+	private DefaultListModel<PastTrip> pastTripListModel = new DefaultListModel<>();
+	private DefaultListModel<ReservedTrip> reservedTripListModel = new DefaultListModel<>();
+	private DefaultListModel<PaymentMethod> paymentMethodListModel = new DefaultListModel<>();
 
 	public AppForm(Controller controller) throws HeadlessException {
 		setContentPane(panel);
@@ -91,13 +94,15 @@ public class AppForm extends JFrame {
 				String timeString = pickupTimeField.getText();
 				try {
 					LocalDateTime time = LocalDateTime.parse(timeString);
-					controller.reserveTrip(pickupAddressField.getText(), destinationAddressField.getText(), time);
+					ReservedTrip trip = controller.reserveTrip(pickupAddressField.getText(), destinationAddressField.getText(), time);
+					reservedTripListModel.addElement(trip);
 				} catch (DateTimeParseException ex) {
 					JOptionPane.showMessageDialog(this, "Invalid time format. Please use the format yyyy-MM-dd HH:mm");
 					return;
 				}
 			} else {
-				controller.pickupNow(pickupAddressField.getText(), destinationAddressField.getText());
+				PastTrip trip = controller.pickupNow(pickupAddressField.getText(), destinationAddressField.getText());
+				pastTripListModel.addElement(trip);
 			}
 		});
 	}
@@ -105,18 +110,12 @@ public class AppForm extends JFrame {
 	private void setupReservedTab() {
 		List<ReservedTrip> trips = controller.reservedTripRepository().list();
 
-		ListModel<ReservedTrip> model = new AbstractListModel<ReservedTrip>() {
-			@Override
-			public int getSize() {
-				return trips.size();
-			}
-			@Override
-			public ReservedTrip getElementAt(int i) {
-				return trips.get(i);
-			}
-		};
+		for (ReservedTrip trip : trips) {
+			reservedTripListModel.addElement(trip);
+		}
+
 		reservedList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		reservedList.setModel(model);
+		reservedList.setModel(reservedTripListModel);
 
 		reservedList.addListSelectionListener(e -> {
 			ReservedTrip trip = reservedList.getSelectedValue();
@@ -133,34 +132,63 @@ public class AppForm extends JFrame {
 			if (index != -1) {
 				System.out.println("Canceling trip " + index);
 				trips.remove(index);
+				reservedTripListModel.remove(index);
 			}
 		});
 	}
 
 	private void setupHistoryTab() {
 		List<PastTrip> trips = controller.pastTripRepository().list();
-		ListModel<PastTrip> model = new AbstractListModel<>() {
-			@Override
-			public int getSize() {
-				return trips.size();
-			}
-			@Override
-			public PastTrip getElementAt(int i) {
-				return trips.get(i);
-			}
-		};
+
+		for(PastTrip trip: trips) {
+			pastTripListModel.addElement(trip);
+		}
 
 		historyList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		historyList.setModel(model);
+		historyList.setModel(pastTripListModel);
 
 		historyList.addListSelectionListener(e -> {
 			PastTrip trip = historyList.getSelectedValue();
-			if (trip != null) {
+			if (trip == null) {
+				return;
 			}
+			historyPickupAddressLabel.setText(trip.pickupAddress());
+			historyDestinationAddressLabel.setText(trip.destinationAddress());
+			historyDriverLabel.setText(trip.driver().name());
+			historyDepartureTimeLabel.setText(trip.departureTime().truncatedTo(ChronoUnit.SECONDS).toString());
+			historyArrivalTimeLabel.setText(trip.arrivalTime().truncatedTo(ChronoUnit.SECONDS).toString());
+			Optional<Rating> rating = trip.rating();
+			historyRateLabel.setText(rating.map(value -> value.rating() + "/10").orElse("---"));
+			Optional<Tip> tip = trip.tip();
+			historyTipLabel.setText(tip.map(value -> String.format("%.2f€", value.tip())).orElse("---"));
 		});
 
 		rateButton.addActionListener(e -> {
-			RateTripDialog dialog = new RateTripDialog();
+			int index = historyList.getSelectedIndex();
+			if (index == -1) {
+				return;
+			}
+			PastTrip trip = trips.get(index);
+			if (trip.rating().isPresent()) {
+				JOptionPane.showMessageDialog(this, "You have already rated this trip");
+				return;
+			}
+			RateTripDialog dialog = new RateTripDialog(trip);
+			dialog.pack();
+			dialog.setVisible(true);
+		});
+
+		tipButton.addActionListener(e -> {
+			int index = historyList.getSelectedIndex();
+			if (index == -1) {
+				return;
+			}
+			PastTrip trip = trips.get(index);
+			if (trip.tip().isPresent()) {
+				JOptionPane.showMessageDialog(this, "You have already tipped this trip");
+				return;
+			}
+			TipDialog dialog = new TipDialog(controller, trip);
 			dialog.pack();
 			dialog.setVisible(true);
 		});

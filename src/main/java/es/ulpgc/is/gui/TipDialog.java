@@ -1,15 +1,22 @@
 package es.ulpgc.is.gui;
 
+import es.ulpgc.is.model.Controller;
+import es.ulpgc.is.model.PastTrip;
+
 import javax.swing.*;
 import java.awt.event.*;
 
 public class TipDialog extends JDialog {
+	private Controller controller;
+	private PastTrip trip;
 	private JPanel contentPane;
 	private JButton buttonOK;
 	private JButton buttonCancel;
-	private JTextField textField1;
+	private JTextField tipAmmountField;
 
-	public TipDialog() {
+	public TipDialog(Controller controller, PastTrip trip) {
+		this.controller = controller;
+		this.trip = trip;
 		setContentPane(contentPane);
 		setModal(true);
 		getRootPane().setDefaultButton(buttonOK);
@@ -31,6 +38,17 @@ public class TipDialog extends JDialog {
 	}
 
 	private void onOK() {
+		if(tipAmmountField.getText().isEmpty()) {
+			JOptionPane.showMessageDialog(this, "Please enter a tip amount", "Error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		try {
+			double tipAmmount = Double.parseDouble(tipAmmountField.getText());
+			controller.giveTip(tipAmmount, trip);
+		} catch (NumberFormatException e) {
+			JOptionPane.showMessageDialog(this, "Please enter a valid tip amount", "Error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
 		// add your code here
 		dispose();
 	}
@@ -38,12 +56,5 @@ public class TipDialog extends JDialog {
 	private void onCancel() {
 		// add your code here if necessary
 		dispose();
-	}
-
-	public static void main(String[] args) {
-		TipDialog dialog = new TipDialog();
-		dialog.pack();
-		dialog.setVisible(true);
-		System.exit(0);
 	}
 }

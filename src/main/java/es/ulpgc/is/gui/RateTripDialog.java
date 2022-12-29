@@ -1,16 +1,21 @@
 package es.ulpgc.is.gui;
 
+import es.ulpgc.is.model.PastTrip;
+import es.ulpgc.is.model.Rating;
+
 import javax.swing.*;
 import java.awt.event.*;
 
 public class RateTripDialog extends JDialog {
+	PastTrip trip;
 	private JPanel contentPane;
 	private JButton buttonOK;
 	private JButton buttonCancel;
 	private JSlider ratingSlider;
-	private JTextArea textArea1;
+	private JTextArea ratingContent;
 
-	public RateTripDialog() {
+	public RateTripDialog(PastTrip trip) {
+		this.trip = trip;
 		setContentPane(contentPane);
 		setModal(true);
 		getRootPane().setDefaultButton(buttonOK);
@@ -32,8 +37,7 @@ public class RateTripDialog extends JDialog {
 	}
 
 	private void onOK() {
-		// add your code here
-		System.out.println("Rating: " + ratingSlider.getValue() + "\nComment: " + textArea1.getText());
+		trip.setRating(new Rating(ratingSlider.getValue(), ratingContent.getText()));
 		dispose();
 	}
 
