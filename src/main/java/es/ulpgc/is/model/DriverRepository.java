@@ -2,6 +2,7 @@ package es.ulpgc.is.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class DriverRepository {
 
@@ -21,5 +22,10 @@ public class DriverRepository {
                 .filter(driver -> driver.id().equals(driverId))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Driver not found"));
+    }
+
+	public Driver getAvailableDriver() {
+	      Random random = new Random();
+        return driverList.get(random.nextInt(driverList.size()));
     }
 }

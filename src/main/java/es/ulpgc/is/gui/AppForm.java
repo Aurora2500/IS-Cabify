@@ -5,6 +5,10 @@ import es.ulpgc.is.model.PastTrip;
 import es.ulpgc.is.model.PaymentMethod;
 import es.ulpgc.is.model.ReservedTrip;
 
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -35,6 +39,13 @@ public class AppForm extends JFrame {
 	private JLabel reservedDriverField;
 	private JLabel reservedPickupAddressField;
 	private JLabel reservedDestinationAddressField;
+	private JLabel historyPickupAddressLabel;
+	private JLabel historyDestinationAddressLabel;
+	private JLabel historyDriverLabel;
+	private JLabel historyDepartureTimeLabel;
+	private JLabel historyArrivalTimeLabel;
+	private JLabel historyRateLabel;
+	private JLabel historyTipLabel;
 
 	public AppForm(Controller controller) throws HeadlessException {
 		setContentPane(panel);
@@ -63,7 +74,30 @@ public class AppForm extends JFrame {
 			pickupTimeField.setText("");
 		});
 
+		KeyAdapter disableReserveButtonIfEmpty = new KeyAdapter() {
+			public void keyReleased(KeyEvent e) {
+				super.keyReleased(e);
+				reserveButton.setEnabled(!pickupAddressField.getText().isEmpty() && !destinationAddressField.getText().isEmpty());
+			}
+		};
+
+		pickupAddressField.addKeyListener(disableReserveButtonIfEmpty);
+		destinationAddressField.addKeyListener(disableReserveButtonIfEmpty);
+
 		reserveButton.addActionListener(e -> {
+			if (reserveRadioButton.isSelected()) {
+				// get the time from the text field
+				String timeString = pickupTimeField.getText();
+				try {
+					LocalDateTime time = LocalDateTime.parse(timeString);
+					controller.reserveTrip(pickupAddressField.getText(), destinationAddressField.getText(), time);
+				} catch (DateTimeParseException ex) {
+					JOptionPane.showMessageDialog(this, "Invalid time format. Please use the format yyyy-MM-dd HH:mm");
+					return;
+				}
+			} else {
+				controller.pickupNow(pickupAddressField.getText(), destinationAddressField.getText());
+			}
 		});
 	}
 

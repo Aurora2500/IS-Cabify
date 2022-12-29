@@ -1,6 +1,7 @@
 package es.ulpgc.is.model;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 public class Controller {
 	private final PaymentManager paymentManager = new PaymentManager();
@@ -24,6 +25,19 @@ public class Controller {
 	public void addDriver(String name, String id) {
 		Driver driver = new Driver(name, id);
 		driverRepository.add(driver);
+	}
+
+	public void pickupNow(String pickupAddress, String destinationAddress) {
+		Driver driver = driverRepository.getAvailableDriver();
+		LocalDateTime now = LocalDateTime.now();
+		PastTrip trip = new PastTrip(pickupAddress, destinationAddress, driver, now.minus(5, ChronoUnit.MINUTES), now);
+		pastTripRepository.add(trip);
+	}
+
+		public void reserveTrip(String pickupAddress, String destinationAddress, LocalDateTime pickupTime) {
+		Driver driver = driverRepository.getAvailableDriver();
+		ReservedTrip trip = new ReservedTrip(pickupAddress, destinationAddress, driver, pickupTime);
+		reservedTripRepository.add(trip);
 	}
 
 	public void addReserveTrip(String pickupAddress, String destinationAddress, String driverId, LocalDateTime pickupTime) {
