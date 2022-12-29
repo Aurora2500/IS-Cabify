@@ -46,6 +46,7 @@ public class AppForm extends JFrame {
 	private JLabel historyRateLabel;
 	private JLabel historyTipLabel;
 	private JLabel discountLabel;
+	private JLabel activePaymentLabel;
 
 	private DefaultListModel<PastTrip> pastTripListModel = new DefaultListModel<>();
 	private DefaultListModel<ReservedTrip> reservedTripListModel = new DefaultListModel<>();
@@ -195,19 +196,15 @@ public class AppForm extends JFrame {
 	}
 
 	private void setupPaymentTab() {
-		ListModel<PaymentMethod> model = new AbstractListModel<>() {
-			@Override
-			public int getSize() {
-				return controller.paymentManager().getPayments().size();
-			}
-			@Override
-			public PaymentMethod getElementAt(int i) {
-				return controller.paymentManager().getPayments().get(i);
-			}
-		};
+		for(PaymentMethod pm: controller.paymentManager().getPayments()) {
+			paymentMethodListModel.addElement(pm);
+		}
 
 		paymentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		paymentList.setModel(model);
+		paymentList.setModel(paymentMethodListModel);
+
+		PaymentMethod activePayment = controller.paymentManager().activePayment();
+		activePaymentLabel.setText(String.valueOf(activePayment));
 
 		newPaymentMethodButton.addActionListener(e -> {
 			newPaymentMethodButtonCallback();
@@ -216,10 +213,38 @@ public class AppForm extends JFrame {
 		promoCodeButton.addActionListener(e -> {
 			promoCodeButtonCallback();
 		});
+
+		setActivePaymentButton.addActionListener(e -> {
+			setActivePaymentButtonCallback();
+		});
+
+		removePaymentMethodButton.addActionListener(e -> {
+			removePaymentMethodButtonCallback();
+		});
+	}
+
+	private void setActivePaymentButtonCallback() {
+		int index = paymentList.getSelectedIndex();
+		if (index == -1) {
+			return;
+		}
+		PaymentMethod payment = paymentMethodListModel.get(index);
+		controller.paymentManager().setActivePayment(index);
+		activePaymentLabel.setText(String.valueOf(payment));
+	}
+
+	private void removePaymentMethodButtonCallback() {
+		int index = paymentList.getSelectedIndex();
+		if (index == -1) {
+			return;
+		}
+		PaymentMethod pm = paymentMethodListModel.get(index);
+		controller.paymentManager().removePayment(pm);
+		paymentMethodListModel.remove(index);
 	}
 
 	private void newPaymentMethodButtonCallback() {
-		NewPaymentDialog dialog = new NewPaymentDialog(controller);
+		NewPaymentDialog dialog = new NewPaymentDialog(controller, pm -> paymentMethodListModel.addElement(pm));
 		dialog.pack();
 		dialog.setVisible(true);
 	}

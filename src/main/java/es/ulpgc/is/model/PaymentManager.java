@@ -61,6 +61,10 @@ public class PaymentManager {
         payments.remove(paymentMethod);
     }
 
+    public PaymentMethod activePayment(){
+        return payments.get(activePayment);
+    }
+
     public void setActivePayment(int activePayment){
         this.activePayment = activePayment;
     }

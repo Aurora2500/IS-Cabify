@@ -54,14 +54,16 @@ public class Controller {
 		pastTripRepository.add(trip);
 	}
 
-	public void addPayPal(String name) {
+	public PaymentMethod addPayPal(String name) {
 		PayPal payPal = new PayPal(name);
 		paymentManager.addPayment(payPal);
+		return  payPal;
 	}
 
-	public void addBankCard(String IBAN) {
+	public PaymentMethod addBankCard(String IBAN) {
 		BankCard bankCard = new BankCard(IBAN);
 		paymentManager.addPayment(bankCard);
+		return bankCard;
 	}
 
 	public void giveTip(double tip, PastTrip trip) {

@@ -1,12 +1,15 @@
 package es.ulpgc.is.gui;
 
 import es.ulpgc.is.model.Controller;
+import es.ulpgc.is.model.PaymentMethod;
 
 import javax.swing.*;
 import java.awt.event.*;
+import java.util.function.Consumer;
 
 public class NewPaymentDialog extends JDialog {
 	Controller controller;
+	Consumer<PaymentMethod> callback;
 	private JPanel contentPane;
 	private JButton buttonOK;
 	private JButton buttonCancel;
@@ -15,8 +18,9 @@ public class NewPaymentDialog extends JDialog {
 	private JTextField detailsField;
 	private JLabel newPaymentMethodField;
 
-	public NewPaymentDialog(Controller controller) {
+	public NewPaymentDialog(Controller controller, Consumer<PaymentMethod> callback) {
 		this.controller = controller;
+		this.callback = callback;
 
 		setContentPane(contentPane);
 		setModal(true);
@@ -52,9 +56,12 @@ public class NewPaymentDialog extends JDialog {
 		// add your code here
 		// print which radio button is selected
 		if (PaypalRadioButton.isSelected()) {
-			controller.addPayPal(detailsField.getText());
+			PaymentMethod pm = controller.addPayPal(detailsField.getText());
+			callback.accept(pm);
 		} else if (BankRadioButton.isSelected()) {
-			controller.addBankCard(detailsField.getText());
+			PaymentMethod pm = controller.addBankCard(detailsField.getText());
+			System.out.println(callback + " " + pm);
+			callback.accept(pm);
 		}
 		dispose();
 	}
