@@ -10,7 +10,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import javax.swing.*;
-import javax.swing.text.html.Option;
 import java.awt.*;
 import java.util.Optional;
 
@@ -47,6 +46,7 @@ public class AppForm extends JFrame {
 	private JLabel historyTipLabel;
 	private JLabel discountLabel;
 	private JLabel activePaymentLabel;
+	private JButton debugFinishTripButton;
 
 	private DefaultListModel<PastTrip> pastTripListModel = new DefaultListModel<>();
 	private DefaultListModel<ReservedTrip> reservedTripListModel = new DefaultListModel<>();
@@ -135,6 +135,18 @@ public class AppForm extends JFrame {
 				trips.remove(index);
 				reservedTripListModel.remove(index);
 			}
+		});
+
+		debugFinishTripButton.addActionListener(e -> {
+			int index = reservedList.getSelectedIndex();
+			if (index == -1) {
+				return;
+			}
+			System.out.println("Finishing trip " + index);
+			PastTrip pastTrip = controller.finishTrip(index);
+			reservedTripListModel.remove(index);
+			pastTripListModel.addElement(pastTrip);
+
 		});
 	}
 

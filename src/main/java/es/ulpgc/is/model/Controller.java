@@ -71,4 +71,12 @@ public class Controller {
 		Driver driver = trip.driver();
 		trip.giveTip(new Tip(tip, driver));
 	}
+
+	public PastTrip finishTrip(int index) {
+		ReservedTrip trip = reservedTripRepository.removeReserve(index);
+		LocalDateTime now = LocalDateTime.now();
+		PastTrip pastTrip = new PastTrip(trip.pickupAddress(), trip.destinationAddress(), trip.driver(), trip.pickupTime(), now);
+		pastTripRepository.add(pastTrip);
+		return pastTrip;
+	}
 }
