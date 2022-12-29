@@ -31,6 +31,14 @@ public class PaymentManager {
         return discount != null;
     }
 
+    public double getDiscount() {
+        double discount = 1;
+        for (Double d : promo) {
+            discount *= 1 - d;
+        }
+        return 1 - discount;
+    }
+
     public void PayFare(double price) {
         double finalPrice = price;
         for (double discount : promo) {

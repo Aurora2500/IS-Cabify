@@ -46,6 +46,7 @@ public class AppForm extends JFrame {
 	private JLabel historyArrivalTimeLabel;
 	private JLabel historyRateLabel;
 	private JLabel historyTipLabel;
+	private JLabel discountLabel;
 
 	public AppForm(Controller controller) throws HeadlessException {
 		setContentPane(panel);
@@ -183,6 +184,10 @@ public class AppForm extends JFrame {
 		newPaymentMethodButton.addActionListener(e -> {
 			newPaymentMethodButtonCallback();
 		});
+
+		promoCodeButton.addActionListener(e -> {
+			promoCodeButtonCallback();
+		});
 	}
 
 	private void newPaymentMethodButtonCallback() {
@@ -196,7 +201,8 @@ public class AppForm extends JFrame {
 	}
 
 	private void promoCodeButtonCallback() {
-		if (promoCodeField.getText().isEmpty()) {
+		String code = promoCodeField.getText();
+		if (code.isEmpty()) {
 			// ignore if empty
 			return;
 		}
@@ -204,5 +210,14 @@ public class AppForm extends JFrame {
 		System.out.println("Redeeming promo code: " + promoCodeField.getText());
 		// clear out the promo code field
 		promoCodeField.setText("");
+
+		boolean validCode = controller.paymentManager().redeemCode(code);
+		if (!validCode) {
+			JOptionPane.showMessageDialog(this, "Invalid promo code");
+			return;
+		}
+		// valid code, update discount label
+		double discount = controller.paymentManager().getDiscount();
+		discountLabel.setText(String.format("%.0f%%", discount * 100));
 	}
 }
